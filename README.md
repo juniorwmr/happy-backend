@@ -7,6 +7,7 @@
 <p align="center"></p>
 <h1 align="center">
     <a href="https://nodejs.org/en/">🔗 Nodejs</a>
+    <a href="https://www.sqlite.org/">💾 SQLite</a>
 </h1>
 <p align="center">🚀 O projeto está sendo desenvolvimento conforme o WorkShop Next Level Week.</p>
 <p align="center">É um projeto para gestão de visitas ao orfanato <strong>Happy</strong>.</p>
@@ -27,6 +28,9 @@ $ git clone git@github.com:juniorwmr/happy-backend.git
 
 # Acesse a pasta do projeto no terminal/cmd
 $ cd happy-backend
+
+# Execute as migrações
+$ yarn typeorm migration:run
 
 # Instale as dependências
 $ npm install
