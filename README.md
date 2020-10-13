@@ -32,6 +32,9 @@ $ cd happy-backend
 # Execute as migrações
 $ yarn typeorm migration:run
 
+# Crie um arquivo na pasta raiz do projeto e crie uma variável chamada HOST, atribuindo-a o host da aplicação
+$ touch .env
+
 # Instale as dependências
 $ npm install
 
