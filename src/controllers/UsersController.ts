@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { User } from '../models/User';
 
 export default {
-  async auth(request: any, response: Response) {
+  async auth(request: Request, response: Response) {
     const { email, password } = request.body;
 
     const usersRepository = getRepository(User);
