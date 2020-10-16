@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-
 import { User } from '../models/User';
 
 export default {
@@ -10,12 +9,16 @@ export default {
     const usersRepository = getRepository(User);
     const user = await usersRepository.findOne({ email });
     if (user && (await user.comparePassword(password))) {
-      response.status(200).json({
-        message: true,
+      const { accessToken, expiresIn } = user.createToken(user);
+      return response.status(200).json({
+        auth: true,
+        token: accessToken,
+        expiresIn,
       });
     }
 
     return response.status(400).json({
+      auth: false,
       message: 'Invalid e-mail or password.',
     });
   },
