@@ -27,12 +27,10 @@ export class User {
   }
 
   createToken(user: User) {
-    const expiresIn = 3600;
+    const expiresIn = '10m';
     const accessToken = jwt.sign(
       {
         id: user.id,
-        name: user.name,
-        email: user.email,
       },
       secretKey.secret,
       { expiresIn }
