@@ -3,7 +3,7 @@ require('dotenv').config();
 import path from 'path';
 import express from 'express';
 import 'express-async-errors';
-import cors from 'express';
+import cors from 'cors';
 
 import './database/connection';
 import { errorHandler } from './errors/handler';
