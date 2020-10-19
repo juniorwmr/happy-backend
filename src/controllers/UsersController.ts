@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
+import crypto from 'crypto';
 import { getRepository } from 'typeorm';
+import { transportMail } from './../providers/Mail';
 import { User } from '../models/User';
 
 export default {
@@ -26,16 +28,120 @@ export default {
   async create(request: Request, response: Response) {
     const { name, email, password } = request.body;
 
-    const data = {
-      name,
-      email,
-      password,
-    };
+    try {
+      const usersRepository = getRepository(User);
+      const user = await usersRepository.findOne({ email });
+      if (user) {
+        return response.status(400).json({ message: 'User already exists.' });
+      }
+      const new_user = usersRepository.create({
+        name,
+        email,
+        password,
+      });
+      await usersRepository.save(new_user);
+
+      return response.status(201).json(user);
+    } catch (error) {
+      return response.json({ message: error });
+    }
+  },
+
+  async forgetPassword(request: Request, response: Response) {
+    const { email } = request.body;
 
     const usersRepository = getRepository(User);
-    const user = usersRepository.create(data);
+    const user = await usersRepository.findOne({ email });
+
+    if (!user) {
+      response.status(400).json({ message: 'User not found.' });
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+
+    user.reset_password_token = token;
+    user.reset_password_date_expires = now;
+
     await usersRepository.save(user);
 
-    return response.status(201).json(user);
+    transportMail.sendMail({
+      to: email,
+      from: 'happy@company.com.br',
+      subject: 'Recuperação de Senha',
+      html: `<p>Você esqueceu sua senha? Não tem problema! <a href=${
+        process.env.WEB + '/forget_password/' + token
+      }>Clique aqui</a> para recuperar sua senha de forma segura.</p></div>`,
+    });
+
+    response.status(200).json({
+      message: 'E-mail sent successfully.',
+    });
+  },
+
+  async VerifyForgetPasswordToken(request: Request, response: Response) {
+    const { token } = request.params;
+
+    if (!token) {
+      return response.status(401).json({ message: 'No token provided.' });
+    }
+
+    try {
+      const usersRepository = getRepository(User);
+      const user = await usersRepository.findOne({
+        reset_password_token: token,
+      });
+
+      if (!user) {
+        return response.status(400).json({ message: 'Token incorrect.' });
+      }
+
+      const now = new Date();
+      const reset_password_date = new Date(user.reset_password_date_expires);
+      if (reset_password_date < now) {
+        return response.status(400).json({
+          message: 'Token has expired. ',
+        });
+      }
+
+      return response.status(200).json({
+        email: user.email,
+      });
+    } catch (error) {
+      return response.json({ message: error });
+    }
+  },
+
+  async RecoveryPassword(request: Request, response: Response) {
+    const { token } = request.params;
+    const { email, password } = request.body;
+
+    if (!token) {
+      return response.status(400).json({ message: 'No token provided.' });
+    }
+
+    const usersRepository = getRepository(User);
+
+    const user = await usersRepository.findOne({ email });
+
+    if (!user) {
+      return response.status(400).json({
+        message: 'Usuário não encontrado.',
+      });
+    }
+
+    user.reset_password_date_expires = null;
+    user.reset_password_token = null;
+
+    user.password = password;
+    await user.hashPassword();
+
+    await usersRepository.save(user);
+
+    response.status(202).json({
+      message: 'Password changed successfully.',
+    });
   },
 };

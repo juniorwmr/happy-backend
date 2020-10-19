@@ -16,8 +16,18 @@ routes.get('/orphanages/:id', OrphanagesController.show);
 routes.post('/users', UsersController.create);
 
 routes.post('/auth', UsersController.auth);
+routes.post('/forget_password', UsersController.forgetPassword);
+routes.get(
+  '/forget_password/verify/:token',
+  UsersController.VerifyForgetPasswordToken
+);
+routes.post('/forget_password/:token', UsersController.RecoveryPassword);
 
-routes.use(AuthenticateMiddleware);
-routes.post('/orphanages', upload.array('images'), OrphanagesController.create);
+routes.post(
+  '/orphanages',
+  AuthenticateMiddleware,
+  upload.array('images'),
+  OrphanagesController.create
+);
 
 export { routes };
