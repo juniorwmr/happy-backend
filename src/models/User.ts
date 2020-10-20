@@ -33,7 +33,7 @@ export class User {
   }
 
   createToken(user: User) {
-    const expiresIn = '10m';
+    const expiresIn = '1m';
     const accessToken = jwt.sign(
       {
         id: user.id,

@@ -10,11 +10,15 @@ import { AuthenticateMiddleware } from './middlewares/auth';
 const routes = Router();
 const upload = multer(uploadConfig);
 
+// Orphanage List
 routes.get('/orphanages', OrphanagesController.index);
+routes.get('/orphanages/pendents', OrphanagesController.findUnChecked);
 routes.get('/orphanages/:id', OrphanagesController.show);
 
+// Create Users
 routes.post('/users', UsersController.create);
 
+// Sign In, Sign Up, Forget Password
 routes.post('/auth', UsersController.auth);
 routes.post('/forget_password', UsersController.forgetPassword);
 routes.get(
@@ -23,11 +27,19 @@ routes.get(
 );
 routes.post('/forget_password/:token', UsersController.RecoveryPassword);
 
-routes.post(
+// Orphanage Create
+routes.post('/orphanages', upload.array('images'), OrphanagesController.create);
+
+// Privates Routes - only with token
+routes.put(
   '/orphanages',
+  [AuthenticateMiddleware, upload.array('images')],
+  OrphanagesController.update
+);
+routes.delete(
+  '/orphanages/:id',
   AuthenticateMiddleware,
-  upload.array('images'),
-  OrphanagesController.create
+  OrphanagesController.delete
 );
 
 export { routes };
