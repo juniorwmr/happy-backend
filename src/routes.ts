@@ -19,13 +19,13 @@ routes.get('/orphanages/:id', OrphanagesController.show);
 routes.post('/users', UsersController.create);
 
 // Sign In, Sign Up, Forget Password
-routes.post('/auth', UsersController.auth);
-routes.post('/forget_password', UsersController.forgetPassword);
+routes.post('/users/auth', UsersController.auth);
+routes.post('/users/forget_password', UsersController.forgetPassword);
 routes.get(
-  '/forget_password/verify/:token',
+  '/users/forget_password/verify/:token',
   UsersController.VerifyForgetPasswordToken
 );
-routes.post('/forget_password/:token', UsersController.RecoveryPassword);
+routes.post('/users/forget_password/:token', UsersController.ResetPassword);
 
 // Orphanage Create
 routes.post('/orphanages', upload.array('images'), OrphanagesController.create);

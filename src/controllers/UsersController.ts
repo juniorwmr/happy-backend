@@ -41,7 +41,9 @@ export default {
       });
       await usersRepository.save(new_user);
 
-      return response.status(201).json(user);
+      return response
+        .status(201)
+        .json({ name: new_user.name, email: new_user.email });
     } catch (error) {
       return response.json({ message: error });
     }
@@ -83,7 +85,6 @@ export default {
 
   async VerifyForgetPasswordToken(request: Request, response: Response) {
     const { token } = request.params;
-
     if (!token) {
       return response.status(401).json({ message: 'No token provided.' });
     }
@@ -114,7 +115,7 @@ export default {
     }
   },
 
-  async RecoveryPassword(request: Request, response: Response) {
+  async ResetPassword(request: Request, response: Response) {
     const { token } = request.params;
     const { email, password } = request.body;
 
