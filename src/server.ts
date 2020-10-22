@@ -1,3 +1,9 @@
 import { app } from './app';
+import { createTypeOrmConnection } from './database/connection';
 
-app.listen(3333);
+const startServer = async () => {
+  await createTypeOrmConnection();
+  app.listen(3333);
+};
+
+startServer();

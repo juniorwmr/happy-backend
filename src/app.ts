@@ -1,11 +1,12 @@
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env.development',
+});
 
 import path from 'path';
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 
-import './database/connection';
 import { errorHandler } from './errors/handler';
 
 import { routes } from './routes';
