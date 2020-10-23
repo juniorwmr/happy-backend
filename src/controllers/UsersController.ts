@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
+import * as Yup from 'yup';
 import { getRepository } from 'typeorm';
 import { transportMail } from './../providers/Mail';
 import { User } from '../models/User';
@@ -8,20 +9,38 @@ export default {
   async auth(request: Request, response: Response) {
     const { email, password } = request.body;
 
+    const schema = Yup.object().shape({
+      email: Yup.string().required(),
+      password: Yup.string().required(),
+    });
+
+    await schema.validate(
+      { email, password },
+      {
+        abortEarly: false,
+      }
+    );
+
     const usersRepository = getRepository(User);
     const user = await usersRepository.findOne({ email });
-    if (user && (await user.comparePassword(password))) {
-      const { accessToken, expiresIn } = user.createToken(user);
-      return response.status(200).json({
-        auth: true,
-        token: accessToken,
-        expiresIn,
+    if (!user) {
+      return response.status(401).json({
+        auth: false,
+        message: 'Invalid e-mail.',
       });
     }
-
-    return response.status(400).json({
-      auth: false,
-      message: 'Invalid e-mail or password.',
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
+      return response.status(401).json({
+        auth: false,
+        message: 'Invalid password.',
+      });
+    }
+    const { accessToken, expiresIn } = user.createToken(user);
+    return response.status(200).json({
+      auth: true,
+      token: accessToken,
+      expiresIn,
     });
   },
 

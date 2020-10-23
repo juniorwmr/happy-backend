@@ -11,6 +11,5 @@ const config = {
     migrationsDir: './src/database/migrations',
   },
 };
-console.log(config);
 
 module.exports = config;
