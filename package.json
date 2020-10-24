@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "SET NODE_ENV=development&&tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "SET NODE_ENV=development&&tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
     "test-server": "SET NODE_ENV=test&& tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
     "migrate:dev": "SET NODE_ENV=development&&tsnd ./node_modules/typeorm/cli.js migration:run --config ./ormconfig.js",
     "pretest": "SET NODE_ENV=test&&tsnd ./node_modules/typeorm/cli.js migration:run --config ./ormconfig.js",
@@ -21,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "nodemailer": "^6.4.14",
+    "pg": "^8.4.1",
     "sqlite3": "^5.0.0",
     "supertest": "^5.0.0",
     "typeorm": "^0.2.28",
