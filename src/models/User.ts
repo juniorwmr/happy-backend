@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import secretKey from '../config/secretKey';
 
 @Entity('users')
-export class User {
+export default class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
 

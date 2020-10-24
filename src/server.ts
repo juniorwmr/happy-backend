@@ -1,9 +1,26 @@
-import { app } from './app';
-import { createTypeOrmConnection } from './database/connection';
+require('dotenv').config();
 
-const startServer = async () => {
-  await createTypeOrmConnection();
-  app.listen(process.env.PORT || 3333);
-};
+import path from 'path';
+import express from 'express';
+import 'express-async-errors';
+import cors from 'cors';
 
-startServer();
+import { errorHandler } from './errors/handler';
+import { routes } from './routes';
+
+import createTypeOrmConnection from './database/connection';
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(routes);
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+// Handles Errors
+app.use(errorHandler);
+
+createTypeOrmConnection();
+app.listen(process.env.PORT || 3333);
+
+export default app;

@@ -1,5 +1,7 @@
-import { createConnection, getConnectionOptions } from 'typeorm';
+import { createConnection } from 'typeorm';
 
-export const createTypeOrmConnection = async () => {
-  return createConnection();
+const createTypeOrmConnection = async () => {
+  await createConnection();
 };
+
+export default createTypeOrmConnection;

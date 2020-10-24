@@ -5,10 +5,10 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { Image } from './Image';
+import Image from './Image';
 
 @Entity('orphanages')
-export class Orphanage {
+export default class Orphanage {
   @PrimaryGeneratedColumn('increment')
   id: number;
   @Column()
