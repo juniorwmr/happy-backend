@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
+    "typeorm": "tsnd ./node_modules/typeorm/cli.js",
     "dev": "tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
     "pretest": "SET NODE_ENV=test&&tsnd ./node_modules/typeorm/cli.js migration:run --config ./ormconfig.js",
     "test": "SET NODE_ENV=test&&jest",
