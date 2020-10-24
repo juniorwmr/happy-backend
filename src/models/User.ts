@@ -18,10 +18,10 @@ export default class User {
   password: string;
 
   @Column({ nullable: true })
-  reset_password_token: string | null;
+  reset_password_token: string;
 
   @Column({ nullable: true })
-  reset_password_date_expires: Date | null;
+  reset_password_date_expires: Date;
 
   @BeforeInsert()
   async hashPassword() {

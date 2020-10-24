@@ -152,8 +152,7 @@ export default {
       });
     }
 
-    user.reset_password_date_expires = null;
-    user.reset_password_token = null;
+    user.reset_password_token = '';
 
     user.password = password;
     await user.hashPassword();
