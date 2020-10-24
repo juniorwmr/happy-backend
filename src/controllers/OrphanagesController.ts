@@ -134,23 +134,25 @@ export default {
       const images_to_remove = Array.isArray(id_images_remove)
         ? id_images_remove
         : Array(id_images_remove);
-      console.log(id_images_remove);
+
       images_to_remove.forEach(async (image_id: string) => {
-        const response = await imageRepository.findOne({
+        const resp = await imageRepository.findOne({
           id: Number(image_id),
         });
-        fs.unlink(
-          path.join(__dirname, '..', '..', 'uploads', response.path),
-          async (err) => {
-            if (err) {
-              console.log('failed to delete local image: ' + err);
-            } else {
-              // Deleting image from DATABASE
-              await imageRepository.delete({ id: Number(image_id) });
-              console.log('successfully deleted local image');
+        if (resp) {
+          fs.unlink(
+            path.join(__dirname, '..', '..', 'uploads', resp.path),
+            async (err) => {
+              if (err) {
+                console.log('failed to delete local image: ' + err);
+              } else {
+                // Deleting image from DATABASE
+                await imageRepository.delete({ id: Number(image_id) });
+                console.log('successfully deleted local image');
+              }
             }
-          }
-        );
+          );
+        }
       });
     }
 

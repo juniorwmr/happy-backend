@@ -75,7 +75,7 @@ export default {
     const user = await usersRepository.findOne({ email });
 
     if (!user) {
-      response.status(400).json({ message: 'User not found.' });
+      return response.status(400).json({ message: 'User not found.' });
     }
 
     const token = crypto.randomBytes(20).toString('hex');
@@ -152,8 +152,8 @@ export default {
       });
     }
 
-    user.reset_password_date_expires = null;
-    user.reset_password_token = null;
+    user.reset_password_date_expires = new Date('');
+    user.reset_password_token = '';
 
     user.password = password;
     await user.hashPassword();

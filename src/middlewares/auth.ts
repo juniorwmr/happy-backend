@@ -7,7 +7,7 @@ export const AuthenticateMiddleware = (
   response: Response,
   next: NextFunction
 ) => {
-  const authHeader: string = request.headers.authorization;
+  const authHeader: string | undefined = request.headers.authorization;
 
   if (!authHeader) {
     return response.status(401).json({ message: 'No token provided.' });
