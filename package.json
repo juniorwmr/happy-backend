@@ -1,14 +1,12 @@
 {
-  "name": "backend",
+  "name": "happy-backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "SET NODE_ENV=development&&tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
-    "test-server": "SET NODE_ENV=test&& tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
-    "migrate:dev": "SET NODE_ENV=development&&tsnd ./node_modules/typeorm/cli.js migration:run --config ./ormconfig.js",
+    "dev": "tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
     "pretest": "SET NODE_ENV=test&&tsnd ./node_modules/typeorm/cli.js migration:run --config ./ormconfig.js",
     "test": "SET NODE_ENV=test&&jest",
     "posttest": "SET NODE_ENV=test&&tsnd ./node_modules/typeorm/cli.js migration:revert --config ./ormconfig.js"

@@ -21,6 +21,7 @@ export default {
 
     return response.status(200).json(OrphanageView.renderMany(orphanages));
   },
+
   async findUnChecked(_: any, response: Response) {
     const orphanagesRepository = getRepository(Orphanage);
     const orphanages = await orphanagesRepository.find({

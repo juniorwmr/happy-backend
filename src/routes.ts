@@ -10,9 +10,6 @@ import { AuthenticateMiddleware } from './middlewares/auth';
 const routes = Router();
 const upload = multer(uploadConfig);
 
-routes.get('/', (request, response) => {
-  response.send('ola');
-});
 // Orphanage List
 routes.get('/orphanages', OrphanagesController.index);
 routes.get('/orphanages/pendents', OrphanagesController.findUnChecked);
