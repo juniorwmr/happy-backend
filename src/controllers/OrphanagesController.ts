@@ -60,7 +60,7 @@ export default {
     const requestImages = request.files as Express.Multer.File[];
     const images = requestImages.map((image) => {
       const imagePath = getPublicUrl(
-        process.env.CLOUD_BUCKET as string,
+        process.env.GCLOUD_BUCKET as string,
         image.filename
       );
       return { path: imagePath };
