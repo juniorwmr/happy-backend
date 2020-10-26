@@ -11,7 +11,7 @@ export const sendUploadToGCS = async (
   }
 
   const requestImages = req.files as Express.Multer.File[];
-  const bucketName = process.env.CLOUD_BUCKET as string;
+  const bucketName = process.env.GCLOUD_BUCKET as string;
   const bucket = storage.bucket(bucketName);
   requestImages.forEach((image) => {
     const gcsFileName = `${Date.now()}-${image.originalname}`;
