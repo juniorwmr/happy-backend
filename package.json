@@ -12,6 +12,7 @@
     "posttest": "SET NODE_ENV=test&&tsnd ./node_modules/typeorm/cli.js migration:revert --config ./ormconfig.js"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

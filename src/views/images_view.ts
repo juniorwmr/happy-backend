@@ -3,7 +3,7 @@ export default {
   render(image: Image) {
     return {
       id: image.id,
-      url: `${process.env.HOST}/uploads/${image.path}`,
+      url: image.path,
     };
   },
   renderMany(images: Image[]) {

@@ -1,13 +1,8 @@
-import multer from 'multer';
-import path from 'path';
+import Multer from 'multer';
 
 export default {
-  storage: multer.diskStorage({
-    destination: path.join(__dirname, '..', '..', 'uploads'),
-    filename: (request, file, callback) => {
-      const fileName = `${Date.now()}-${file.originalname}`;
-
-      callback(null, fileName);
-    },
-  }),
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+  },
 };

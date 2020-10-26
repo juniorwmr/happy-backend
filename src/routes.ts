@@ -7,6 +7,8 @@ import OrphanagesController from './controllers/OrphanagesController';
 import UsersController from './controllers/UsersController';
 import { AuthenticateMiddleware } from './middlewares/auth';
 
+import { sendUploadToGCS } from './middlewares/google-cloud-storage';
+
 const routes = Router();
 const upload = multer(uploadConfig);
 
@@ -28,7 +30,11 @@ routes.get(
 routes.post('/users/forget_password/:token', UsersController.ResetPassword);
 
 // Orphanage Create
-routes.post('/orphanages', upload.array('images'), OrphanagesController.create);
+routes.post(
+  '/orphanages',
+  [upload.array('images'), sendUploadToGCS],
+  OrphanagesController.create
+);
 
 // Privates Routes - only with token
 routes.put(

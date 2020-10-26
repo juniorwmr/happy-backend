@@ -1,3 +1,4 @@
+import { getPublicUrl } from './../helpers/google-cloud-storage';
 import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -58,7 +59,11 @@ export default {
     const orphanagesRepository = getRepository(Orphanage);
     const requestImages = request.files as Express.Multer.File[];
     const images = requestImages.map((image) => {
-      return { path: image.filename };
+      const imagePath = getPublicUrl(
+        process.env.CLOUD_BUCKET as string,
+        image.filename
+      );
+      return { path: imagePath };
     });
 
     const data = {
