@@ -1,9 +1,9 @@
 import { getPublicUrl } from './../helpers/google-cloud-storage';
-import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { getRepository } from 'typeorm';
+import { Request, Response, NextFunction } from 'express';
+
 import * as Yup from 'yup';
+import { getRepository } from 'typeorm';
+import { deleteImagesFromGCS } from '../middlewares/google-cloud-storages/delete';
 
 import OrphanageView from '../views/orphanages_view';
 
@@ -57,13 +57,14 @@ export default {
     } = request.body;
 
     const orphanagesRepository = getRepository(Orphanage);
+
     const requestImages = request.files as Express.Multer.File[];
     const images = requestImages.map((image) => {
       const imagePath = getPublicUrl(
         process.env.GCLOUD_BUCKET as string,
         image.filename
       );
-      return { path: imagePath };
+      return { path: imagePath, key: image.filename };
     });
 
     const data = {
@@ -88,6 +89,7 @@ export default {
       images: Yup.array(
         Yup.object().shape({
           path: Yup.string().required(),
+          key: Yup.string().required(),
         })
       ),
     });
@@ -102,7 +104,7 @@ export default {
     return response.status(201).json(orphanage);
   },
 
-  async update(request: Request, response: Response) {
+  async update(request: Request, response: Response, next: NextFunction) {
     const {
       id,
       name,
@@ -113,11 +115,40 @@ export default {
       opening_hours,
       open_on_weekends,
       check,
-      id_images_remove,
+      image_key,
     } = request.body;
 
     const orphanagesRepository = getRepository(Orphanage);
     const imageRepository = getRepository(Image);
+
+    // deleting images from database
+    if (image_key) {
+      const images_keys = Array.isArray(image_key)
+        ? image_key
+        : Array(image_key);
+
+      await deleteImagesFromGCS(images_keys);
+      images_keys.forEach(async (image) => {
+        await imageRepository.delete({ key: image });
+      });
+    }
+
+    // Adding new images to database
+    const requestImages = request.files as Express.Multer.File[];
+    if (requestImages) {
+      requestImages.forEach(async (image) => {
+        const imagePath = getPublicUrl(
+          process.env.GCLOUD_BUCKET as string,
+          image.filename
+        );
+        const img = imageRepository.create({
+          path: imagePath,
+          key: image.filename,
+          orphanage: id,
+        });
+        await imageRepository.save(img);
+      });
+    }
 
     // Update datas except images
     await orphanagesRepository.update(
@@ -134,54 +165,29 @@ export default {
       }
     );
 
-    // Deleting image from Folder
-    if (id_images_remove) {
-      const images_to_remove = Array.isArray(id_images_remove)
-        ? id_images_remove
-        : Array(id_images_remove);
-
-      images_to_remove.forEach(async (image_id: string) => {
-        const resp = await imageRepository.findOne({
-          id: Number(image_id),
-        });
-        if (resp) {
-          fs.unlink(
-            path.join(__dirname, '..', '..', 'uploads', resp.path),
-            async (err) => {
-              if (err) {
-                console.log('failed to delete local image: ' + err);
-              } else {
-                // Deleting image from DATABASE
-                await imageRepository.delete({ id: Number(image_id) });
-                console.log('successfully deleted local image');
-              }
-            }
-          );
-        }
-      });
-    }
-
-    // Adding new images
-    const requestImages = request.files as Express.Multer.File[];
-    const new_images = requestImages.map((image) => {
-      return imageRepository.create({ path: image.filename, orphanage: id });
-    });
-    imageRepository.save(new_images);
-
     return response
       .status(204)
       .json({ message: 'Orphanage updated successfully.' });
   },
 
-  async delete(request: Request, response: Response) {
+  async delete(request: Request, response: Response, next: NextFunction) {
     const { id } = request.params;
     const orphanage_id = Number(id);
-    if (!id) {
-      return response
-        .status(400)
-        .json({ message: 'No orphanage id provided.' });
-    }
+
     const orphanageRepository = getRepository(Orphanage);
+    const orphanage = await orphanageRepository.findOne(
+      { id: orphanage_id },
+      {
+        relations: ['images'],
+      }
+    );
+
+    if (!orphanage) {
+      return response.status(400).json({ message: 'Orphanage not found.' });
+    }
+
+    await deleteImagesFromGCS(orphanage.images);
+
     await orphanageRepository.delete({ id: orphanage_id });
 
     return response.status(200).json({ message: 'Orphanage deleted.' });

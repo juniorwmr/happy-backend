@@ -4,6 +4,7 @@ export default {
     return {
       id: image.id,
       url: image.path,
+      key: image.key,
     };
   },
   renderMany(images: Image[]) {
