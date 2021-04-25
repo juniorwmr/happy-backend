@@ -36,7 +36,7 @@ export const sendImagesToGCS = async (
           file.makePublic().then(() => {
             image.path = getPublicUrl(bucketName, gcsFileName);
           });
-          resolve();
+          resolve(image.path);
         });
         stream.end(image.buffer);
       });
