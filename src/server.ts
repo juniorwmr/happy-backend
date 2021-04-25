@@ -11,6 +11,8 @@ import { routes } from './routes';
 
 import createTypeOrmConnection from './database/connection';
 
+import 'reflect-metadata';
+
 const app = express();
 
 app.use(helmet());

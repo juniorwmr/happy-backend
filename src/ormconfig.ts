@@ -1,4 +1,5 @@
 export default {
+  driver: 'pg',
   type: 'postgres',
   host: process.env.TYPEORM_HOST,
   port: process.env.TYPEORM_PORT,
