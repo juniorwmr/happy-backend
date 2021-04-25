@@ -1,3 +1,9 @@
 {
+  "ssl": true,
+  "extra": {
+    "ssl": {
+      "rejectUnauthorized": false
+    }
+  },
   "type": "postgres"
 }
