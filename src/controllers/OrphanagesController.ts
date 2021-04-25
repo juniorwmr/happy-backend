@@ -7,8 +7,8 @@ import { deleteImagesFromGCS } from '../middlewares/google-cloud-storages/delete
 
 import OrphanageView from '../views/orphanages_view';
 
-import Orphanage from '../models/Orphanage.entity';
-import Image from '../models/Image.entity';
+import Orphanage from '../models/Orphanage';
+import Image from '../models/Image';
 
 export default {
   async index(_: any, response: Response) {

@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import * as Yup from 'yup';
 import { getRepository } from 'typeorm';
 import { transportMail } from './../providers/Mail';
-import User from '../models/User.entity';
+import User from '../models/User';
 
 export default {
   async auth(request: Request, response: Response) {
