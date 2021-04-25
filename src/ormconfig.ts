@@ -1,4 +1,10 @@
 export default {
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
   driver: 'pg',
   type: 'postgres',
   host: process.env.TYPEORM_HOST,
