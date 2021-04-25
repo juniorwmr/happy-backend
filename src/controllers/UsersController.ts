@@ -64,7 +64,7 @@ export default {
         .status(201)
         .json({ name: new_user.name, email: new_user.email });
     } catch (error) {
-      return response.json({ message: error });
+      return response.status(400).json({ message: error.message });
     }
   },
 
