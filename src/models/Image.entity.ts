@@ -6,7 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import Orphanage from './Orphanage';
+import Orphanage from './Orphanage.entity';
 
 @Entity('images')
 export default class Image {

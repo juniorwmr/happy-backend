@@ -1,4 +1,4 @@
-import Orphanage from './../models/Orphanage';
+import Orphanage from '../models/Orphanage.entity';
 import ImageView from './images_view';
 
 export default {

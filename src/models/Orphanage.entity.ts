@@ -5,7 +5,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import Image from './Image';
+import Image from './Image.entity';
 
 @Entity('orphanages')
 export default class Orphanage {
